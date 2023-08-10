@@ -1,7 +1,10 @@
 package project.restfull.Restfull.resolver;
 
-
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -14,9 +17,12 @@ import project.restfull.Restfull.entity.User;
 import project.restfull.Restfull.repository.UserRepository;
 
 @Component
-public class UserArgumentResolver  implements HandlerMethodArgumentResolver {
+@Slf4j
+public class UserArgumentResolver implements HandlerMethodArgumentResolver {
 
-    UserRepository userRepository;
+    @Autowired
+    private UserRepository userRepository;
+
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
         return User.class.equals(parameter.getParameterType());
@@ -24,13 +30,19 @@ public class UserArgumentResolver  implements HandlerMethodArgumentResolver {
 
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
-        HttpServletRequest servletRequest = (HttpServletRequest) webRequest.getNativeRequest();
+         HttpServletRequest servletRequest = (HttpServletRequest) webRequest.getNativeRequest();
         String token = servletRequest.getHeader("X-API-TOKEN");
+        log.info("TOKEN {}" , token);
         if (token == null){
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unauthorized");
+        }
+        User user = userRepository.findFirstByToken(token)
+                .orElseThrow(() ->
+                        new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unauthorized"));
+        log.info("TOKEN {}" , user);
+        if (user.getTokenExpiredAt() < System.currentTimeMillis()){
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,"Unauthorized");
         }
-
-
-        return null;
+        return user;
     }
 }
