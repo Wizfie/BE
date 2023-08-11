@@ -2,12 +2,10 @@ package project.restfull.Restfull.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import project.restfull.Restfull.entity.User;
 import project.restfull.Restfull.model.RegisterUserRequest;
+import project.restfull.Restfull.model.UpdateUserRequest;
 import project.restfull.Restfull.model.UserResponse;
 import project.restfull.Restfull.model.WebResponse;
 import project.restfull.Restfull.service.UserService;
@@ -25,7 +23,7 @@ public class UserController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public WebResponse<String> register(@RequestBody RegisterUserRequest request){
+    public WebResponse<String> register(@RequestBody RegisterUserRequest request) {
         userService.register(request);
         return WebResponse.<String>builder().data("OK").build();
     }
@@ -35,9 +33,20 @@ public class UserController {
             path = "/api/users/current",
             produces = APPLICATION_JSON_VALUE
     )
-    public WebResponse<UserResponse> get(User user){
+    public WebResponse<UserResponse> get(User user) {
         UserResponse userResponse = userService.get(user);
         return WebResponse.<UserResponse>builder().data(userResponse).build();
     }
+
+    @PatchMapping(
+            path = "api/users/current",
+            consumes = APPLICATION_JSON_VALUE,
+            produces = APPLICATION_JSON_VALUE
+    )
+    public WebResponse<UserResponse> update(User user, @RequestBody UpdateUserRequest request) {
+        UserResponse userResponse = userService.update(user, request);
+        return WebResponse.<UserResponse>builder().data(userResponse).build();
+    }
+
 
 }
