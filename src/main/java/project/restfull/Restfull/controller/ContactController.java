@@ -87,7 +87,7 @@ public class ContactController {
         Page<ContactResponse> contactResponses = contactService.search(user, request);
         return WebResponse.<List<ContactResponse>>builder()
                 .data(contactResponses.getContent())
-                .paging(PaggingResponse.builder()
+                .paging(PagingResponse.builder()
                         .currentPage(contactResponses.getNumber())
                         .totalPage(contactResponses.getTotalPages())
                         .size(contactResponses.getSize())

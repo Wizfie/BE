@@ -14,6 +14,6 @@ public class WebResponse<T> {
     private T data;
     private String errors;
 
-    PaggingResponse paging;
+    PagingResponse paging;
 
 }

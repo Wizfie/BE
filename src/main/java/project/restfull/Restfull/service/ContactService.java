@@ -105,8 +105,8 @@ public class ContactService {
             predicates.add(builder.equal(root.get("user"),user));
             if (Objects.nonNull(request.getName())){
                 predicates.add(builder.or(
-                        builder.like(root.get("firstname"),"%" +request.getName()+ "%"),
-                        builder.like(root.get("lastname"),"%" +request.getName()+ "%")
+                        builder.like(root.get("firstName"),"%" +request.getName()+ "%"),
+                        builder.like(root.get("lastName"),"%" +request.getName()+ "%")
                 ));
 
             }

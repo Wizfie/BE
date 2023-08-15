@@ -370,8 +370,142 @@ class ContactControllerTest {
 
         mockMvc.perform(
                 get("/api/contact")
-                        .accept(MediaType.APPLICATION_JSON)
                         .queryParam("name","nana")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("X-API-TOKEN", "tes")
+
+        ).andExpectAll(
+                status().isOk()
+        ).andDo(
+                result -> {
+                    WebResponse<List<ContactResponse>> response = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<>() {
+                    });
+
+                    assertNull(response.getErrors());
+                    assertEquals( 10,response.getData().size());
+                    assertEquals( 10,response.getPaging().getTotalPage());
+                    assertEquals( 0,response.getPaging().getCurrentPage());
+                    assertEquals( 10,response.getPaging().getSize());
+
+                }
+
+        );
+
+
+    }
+
+    @Test
+    void searchPhone() throws Exception {
+
+        User user = userRepository.findById("tes").orElseThrow();
+
+
+        for (int i = 0; i < 100; i++) {
+
+            Contact contact = new Contact();
+            contact.setUser(user);
+            contact.setId(UUID.randomUUID().toString());
+            contact.setFirstName("nana" + i);
+            contact.setLastName("gajah");
+            contact.setEmail("nana@example.com");
+            contact.setPhone("11111");
+            contactRepository.save(contact);
+        }
+
+        mockMvc.perform(
+                get("/api/contact")
+                        .queryParam("phone","111")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("X-API-TOKEN", "tes")
+
+        ).andExpectAll(
+                status().isOk()
+        ).andDo(
+                result -> {
+                    WebResponse<List<ContactResponse>> response = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<>() {
+                    });
+
+                    assertNull(response.getErrors());
+                    assertEquals( 10,response.getData().size());
+                    assertEquals( 10,response.getPaging().getTotalPage());
+                    assertEquals( 0,response.getPaging().getCurrentPage());
+                    assertEquals( 10,response.getPaging().getSize());
+
+                }
+
+        );
+
+
+    }
+
+    @Test
+    void searchEmail() throws Exception {
+
+        User user = userRepository.findById("tes").orElseThrow();
+
+
+        for (int i = 0; i < 100; i++) {
+
+            Contact contact = new Contact();
+            contact.setUser(user);
+            contact.setId(UUID.randomUUID().toString());
+            contact.setFirstName("nana" + i);
+            contact.setLastName("gajah");
+            contact.setEmail("nana@example.com");
+            contact.setPhone("11111");
+            contactRepository.save(contact);
+        }
+
+        mockMvc.perform(
+                get("/api/contact")
+                        .queryParam("email","nana@example.com")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("X-API-TOKEN", "tes")
+
+        ).andExpectAll(
+                status().isOk()
+        ).andDo(
+                result -> {
+                    WebResponse<List<ContactResponse>> response = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<>() {
+                    });
+
+                    assertNull(response.getErrors());
+                    assertEquals( 10,response.getData().size());
+                    assertEquals( 10,response.getPaging().getTotalPage());
+                    assertEquals( 0,response.getPaging().getCurrentPage());
+                    assertEquals( 10,response.getPaging().getSize());
+
+                }
+
+        );
+    }
+
+    @Test
+    void searchPage() throws Exception {
+
+        User user = userRepository.findById("tes").orElseThrow();
+
+
+        for (int i = 0; i < 100; i++) {
+
+            Contact contact = new Contact();
+            contact.setUser(user);
+            contact.setId(UUID.randomUUID().toString());
+            contact.setFirstName("nana" + i);
+            contact.setLastName("gajah");
+            contact.setEmail("nana@example.com");
+            contact.setPhone("11111");
+            contactRepository.save(contact);
+        }
+
+        mockMvc.perform(
+                get("/api/contact")
+                        .queryParam("phone","111")
+                        .queryParam("page","999")
+                        .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("X-API-TOKEN", "tes")
 
@@ -384,8 +518,8 @@ class ContactControllerTest {
 
                     assertNull(response.getErrors());
                     assertEquals( 0,response.getData().size());
-                    assertEquals( 0,response.getPaging().getCurrentPage());
-                    assertEquals( 0,response.getPaging().getTotalPage());
+                    assertEquals( 10,response.getPaging().getTotalPage());
+                    assertEquals( 999,response.getPaging().getCurrentPage());
                     assertEquals( 10,response.getPaging().getSize());
 
                 }
@@ -394,4 +528,7 @@ class ContactControllerTest {
 
 
     }
+
+
+
 }
