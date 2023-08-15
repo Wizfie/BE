@@ -1,9 +1,9 @@
 package project.restfull.Restfull.service;
 
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import project.restfull.Restfull.entity.Address;
 import project.restfull.Restfull.entity.Contact;
@@ -58,13 +58,14 @@ public class AddressService {
                 .postalCode(address.getPostalCode())
                 .build();
     }
-
+    @Transactional(readOnly = true)
     public AddressResponse get(User user,String contactId , String addressId){
         Contact contact = contactRepository.findFirstByUserAndId(user , contactId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Address is not found"));
 
-        addressRepository.findFirstByContactIdAndByAddressId(contactId,addressId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Address is not found"))
+        Address address = addressRepository.findFirstByContactAndId(contact, addressId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Address is not found"));
+
         return toAddressResponse(address);
     }
 }
