@@ -18,6 +18,7 @@ public class AddressController {
     private AddressService addressService;
 
 
+
     @PostMapping(
             path = "/api/contact/{contactId}/addresses",
             consumes = MediaType.APPLICATION_JSON_VALUE,

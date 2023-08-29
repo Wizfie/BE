@@ -23,25 +23,19 @@ public class AuthController {
     @Autowired
     UserService userService;
 
-    @PostMapping(
-            path = "/api/auth/login",
-            consumes = APPLICATION_JSON_VALUE,
-            produces = APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/api/auth/login", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     public WebResponse<TokenResponse> login(@RequestBody LoginUserRequest request) {
         TokenResponse tokenResponse = authService.login(request);
         return WebResponse.<TokenResponse>builder().data(tokenResponse).build();
 
     }
 
-    @DeleteMapping(
-            path = "/api/auth/logout",
-            produces = APPLICATION_JSON_VALUE
+    @DeleteMapping(path = "/api/auth/logout", produces = APPLICATION_JSON_VALUE
 
     )
     public WebResponse<String> logout(User user) {
         authService.logout(user);
         return WebResponse.<String>builder().data("OK").build();
     }
-
 
 }

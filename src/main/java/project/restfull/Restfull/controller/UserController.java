@@ -13,6 +13,7 @@ import project.restfull.Restfull.service.UserService;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
+@CrossOrigin(origins="http://localhost:5173")
 public class UserController {
 
     @Autowired
